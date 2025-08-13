@@ -1,9 +1,23 @@
-import 'package:flutter/material.dart';
-import 'screens/home_screen.dart' as screens;
+// 📄 lib/main.dart
 
-void main() {
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+import 'package:shuruhat_new/screens/splash.dart';
+import 'package:shuruhat_new/theme/app_theme.dart';
+import 'package:shuruhat_new/theme/theme_notifier.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  // تهيئة Google Mobile Ads SDK
+  await MobileAds.instance.initialize();
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeNotifier(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -11,13 +25,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // الحصول على السمة الحالية من الموفر
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+
     return MaterialApp(
-      title: 'WebView UAE',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
-      home: const screens.HomeScreen(),
+      debugShowCheckedModeBanner: false,
+      title: 'عُمان بوابة الطالب الذكي',
+      theme: themeNotifier.currentTheme,
+      // تبدأ دائمًا بشاشة السبلاش
+      home: const SplashScreen(),
     );
   }
 }
